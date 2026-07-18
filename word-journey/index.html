@@ -89,6 +89,10 @@
   .counter b{color:var(--Rd); font-size:1.05rem;}
   .counter.over b{color:var(--minusd);}
   .counter.minus b{color:var(--minus);}
+  /* 하단 고정바 안의 카운터(스크롤 중 항상 보임) */
+  .counterbar{display:flex; justify-content:center;}
+  .counterbar .counter{margin:0; background:#fff; border-color:var(--copyline);}
+  .counterbar .counter.minus{border-color:var(--minusline);}
 
   /* ── 단어 칩 ── */
   .grp{margin:6px 0 16px;}
@@ -309,7 +313,7 @@ const MINUS = [
 /* 단계 정의 */
 const STEPS = [
   {key:'intro', kind:'intro'},
-  {key:'s1', kind:'pick', pool:'plus', target:20, min:8, max:40,
+  {key:'s1', kind:'pick', pool:'plus', target:20, min:15, max:40,
     arc:'끌리는 단어를 넓게 모으는 중이에요.', pill:'1 / 8',
     guide:'단어가 많아 보여도 묶음별로 천천히 보시면 돼요. 눈에 들어오는 것, 마음이 가는 것 위주로 <strong>20개 정도</strong>만 짚어주세요. 정확히 20개가 아니어도 괜찮아요, 끌리는 만큼만요.'},
   {key:'s2', kind:'narrow', source:'s1', target:15, pill:'2 / 8',
@@ -327,7 +331,7 @@ const STEPS = [
   {key:'s6', kind:'narrow', source:'s5', target:5, optional:true, pill:'6 / 8',
     arc:'안 어울릴 것 같은 단어를 5개로 좁히는 중이에요.',
     guide:'짚어둔 것 중 정말 ‘오늘은 이건 아니다’ 싶은 <strong>5개</strong>만 남겨주세요.'},
-  {key:'s7', kind:'pick', pool:'plus', target:5, min:1, max:8, pill:'7 / 8',
+  {key:'s7', kind:'pick', pool:'plus', target:5, min:4, max:8, pill:'7 / 8',
     arc:'안 어울리는 결의 반대편에서, 어울리는 단어를 찾는 중이에요.',
     guide:'방금 빼둔 결의 <strong>반대편</strong>에 있는 느낌을 떠올려보세요. 그 반대 자리에 있는 단어를 <strong>5개</strong> 골라주세요. 어려우면 비슷한 느낌으로만 짚어도 괜찮아요.'},
   {key:'s8', kind:'combo', sources:['s4','s7'], target:5, pill:'8 / 8',
@@ -440,7 +444,7 @@ function renderStep(step, minus){
 
   let html = `<div class="arc${minus?' minus':''}"><span class="nowtag">지금은 —</span>${step.arc}</div>`;
   html += `<p class="guide">${step.guide}</p>`;
-  html += counterHTML(step, minus);
+  // 카운터는 하단 고정바(renderFoot)로 옮겨, 스크롤 중에도 항상 보이게 함
 
   groups.forEach((grp)=>{
     html += `<div class="grp"><div class="gh">${grp.g}</div><div class="chips">`;
@@ -493,7 +497,9 @@ function renderFoot(step, minus){
   }
 
   const pcls = 'btn primary'+(minus?' minus':'');
+  const showCounter = (step.kind==='pick'||step.kind==='narrow'||step.kind==='combo');
   $foot.innerHTML = `
+    ${showCounter?`<div class="counterbar">${counterHTML(step, minus)}</div>`:''}
     <div class="btnrow">
       <button class="btn ghost" onclick="back()">이전</button>
       <button class="btn ${pcls}" id="nextbtn" onclick="next()" ${ok?'':'disabled'}>다음</button>
@@ -510,8 +516,7 @@ function toggle(key, btn){
   if(s.has(w)) s.delete(w); else s.add(w);
   btn.classList.toggle('on');
   const minus = isMinus(step);
-  updateCounter(step, minus);
-  renderFoot(step, minus);
+  renderFoot(step, minus); // 하단 고정 카운터 + 다음버튼 상태 갱신
 }
 
 function autoKeep(){
