@@ -199,6 +199,44 @@
   .wordset .w.minus{background:var(--minusbg); border-color:var(--minusline); color:var(--minus);}
   .rc-empty{color:var(--tx2); font-size:.92rem; font-style:italic;}
 
+  /* B — 오늘의 당신 (완료 시 그 자리에서 뜨는 리딩) */
+  .todaycard{border:2px solid var(--R); border-radius:16px; overflow:hidden; margin:6px 0 16px; box-shadow:0 6px 22px rgba(122,184,122,.16); background:#fff;}
+  .todaycard .tc-head{background:var(--R); color:#fff; padding:14px 20px; font-weight:700; font-size:1.12rem; display:flex; align-items:center; gap:7px;}
+  .todaycard .tc-body{padding:16px 20px;}
+  .tc-lead{font-size:.9rem; color:var(--tx2); margin-bottom:10px;}
+  .tc-lead b{color:var(--Rd);}
+  .tc-read{font-size:1.02rem; line-height:2; color:var(--tx);}
+  .tc-read .em{background:#e6f3e3; border-radius:5px; padding:1px 6px; font-weight:700; color:var(--Rdd);}
+  .breakdown{margin-top:13px; padding:13px 15px; background:#fff; border:1px solid var(--copyline); border-radius:10px;}
+  .breakdown .bt{font-weight:700; color:var(--Rd); font-size:.85rem; margin-bottom:6px;}
+  .breakdown ul{margin:4px 0 0; padding-left:18px;}
+  .breakdown li{margin:6px 0; font-size:.92rem; line-height:1.7; color:var(--tx);}
+  .breakdown li b{color:var(--Rdd);}
+  .tc-shoot{margin-top:13px; padding:13px 15px; background:var(--soft); border-radius:10px; font-size:.97rem; line-height:1.8; color:var(--tx);}
+  .tc-shoot .h{font-weight:700; color:var(--Rd); font-size:.86rem; margin-bottom:4px;}
+  .tc-sign{margin-top:13px; padding-top:12px; border-top:1px dashed var(--copyline); font-size:.9rem; color:var(--tx2); line-height:1.75;}
+  .tc-sign b{color:var(--Rd);}
+
+  /* A — 더 깊이(접힘) */
+  .deepbox{margin:14px 0;}
+  .deeptoggle{width:100%; text-align:left; background:#f6f7fc; border:1px solid #c7cdec; color:#46538a;
+    font-family:inherit; font-weight:700; font-size:.95rem; border-radius:10px; padding:13px 16px; cursor:pointer;}
+  .deeptoggle:hover{background:#eef0fb;}
+  #deeppanel .ptext{white-space:pre-wrap; background:#f6f7fc; border:1px solid #c7cdec; border-radius:8px;
+    padding:12px 14px; font-size:.9rem; line-height:1.8; color:var(--tx); margin:8px 0;}
+  #deeppanel .copybtn{border-color:#5a6aa0; color:#46538a;}
+  #deeppanel .copybtn:hover{background:#eef0fb;}
+  #deeppanel .copybtn.done{background:#5a6aa0; color:#fff;}
+  .deepwhat{margin:10px 0 4px; font-size:.9rem; line-height:1.75; color:var(--tx2);}
+  .deepwhat p{margin:8px 0;}
+  .deepwhat b{color:#46538a;}
+  .deephow{margin:10px 0; padding:11px 14px; background:#fff; border:1px solid #c7cdec; border-radius:9px;}
+  .deephow .hh{font-weight:700; color:#46538a; font-size:.85rem; margin-bottom:4px;}
+  .deephow ol{margin:4px 0 0; padding-left:20px;}
+  .deephow li{margin:5px 0; font-size:.9rem; line-height:1.65; color:var(--tx);}
+  .deepcaveat{background:var(--soft); border-radius:8px; padding:9px 12px; font-size:.86rem; color:var(--tx2); line-height:1.6;}
+  .deepcaveat b{color:var(--Rd);}
+
   .promptbox{
     background:#f6f7fc; border:1px solid #c7cdec; border-left:6px solid #5a6aa0;
     border-radius:10px; padding:16px 18px; margin:14px 0; font-size:.96rem;
@@ -572,17 +610,102 @@ function back(){
 function finalWords(){ return Array.from(sel['s8']); }
 function avoidWords(){ return Array.from(sel['s6']); }
 
+/* 초록 클로버 SVG (허브와 통일된 마크) */
+const CLOVER = `<svg width='16' height='16' viewBox='0 0 40 40' style='vertical-align:-2px'><g fill='#4f9a6a'><path d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/><path transform='rotate(90 20 20)' d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/><path transform='rotate(180 20 20)' d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/><path transform='rotate(270 20 20)' d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/></g><path d='M20,20 Q21,29 25,34' stroke='#4f9a6a' stroke-width='2' fill='none' stroke-linecap='round'/></svg>`;
+
+/* 단어 → 성격군 맵 (플러스 기준) */
+const WORD_GROUP = {};
+PLUS.forEach(g=>g.words.forEach(w=>{ if(!(w in WORD_GROUP)) WORD_GROUP[w]=g.g; }));
+
+/* 성격군별 리딩 조각 (maydly 촬영톤) · explain = "이 결은 이렇게 담겨요" */
+const GROUP_META = {
+  '지혜와 지식':{key:'생각과 시선이 살아있는', shoot:'또렷한 눈빛과, 무언가에 자연스레 몰입한 순간', explain:'무언가를 유심히 보고 헤아리는 결이에요. 살아있는 시선과 몰입한 눈빛을 클로즈업으로 담아요.'},
+  '인간애':{key:'곁을 따뜻하게 데우는', shoot:'부드러운 표정과 가까운 거리감, 온기 있는 색', explain:'곁을 다정하게 데우는 결이에요. 부드러운 입매와 가까운 거리감, 온기 있는 색으로 담아요.'},
+  '정의':{key:'중심이 단단하고 함께 어우러지는', shoot:'안정된 구도와 곧은 존재감', explain:'중심이 단단하고 함께 어우러지는 결이에요. 안정된 구도와 곧은 존재감으로 담아요.'},
+  '용기':{key:'자기 자리를 당당히 지키는', shoot:'정면을 마주하는 곧은 자세와, 있는 그대로의 담백함', explain:'자기 자리를 당당히 지키는 결이에요. 정면을 마주하는 곧은 자세와 담백함으로 담아요.'},
+  '절제':{key:'힘을 빼고 차분히 머무는', shoot:'어깨 힘을 뺀 편안함과 느린 호흡, 절제된 여백', explain:'힘을 빼고 차분히 머무는 결이에요. 편안한 어깨와 느린 호흡, 절제된 여백으로 담아요.'},
+  '초월':{key:'결이 곱고 밝게 차오르는', shoot:'섬세한 디테일과 자연스러운 웃음, 밝게 번지는 분위기', explain:'결이 곱고 밝게 차오르는 결이에요. 섬세한 디테일과 자연스러운 웃음, 번지는 빛으로 담아요.'},
+};
+
+/* B — 그 자리에서 뜨는 maydly 촬영톤 리딩 */
+function buildReading(){
+  const fin = finalWords();
+  const avoid = avoidWords();
+  const longing = Array.from(sel['s7']).filter(w=>!fin.includes(w));
+  const tally={};
+  fin.forEach(w=>{ const g=WORD_GROUP[w]; if(g) tally[g]=(tally[g]||0)+1; });
+  const ranked = Object.keys(tally).sort((a,b)=>tally[b]-tally[a]);
+  const top = ranked.slice(0,2);
+  const themes = top.map(g=>GROUP_META[g].key);
+  const shoot = (top[0] && GROUP_META[top[0]].shoot) || '자연스러운 순간과 편안한 표정';
+
+  let read = `오늘 당신은 <span class="em">${themes.join(', ') || '당신다운 결을 지닌'}</span> 사람이에요. `;
+  read += `골라주신 다섯 단어 — ${fin.join(' · ')} — 에서 그 결이 함께 느껴져요.`;
+  if(avoid.length) read += ` ‘${avoid.slice(0,2).join('·')}’ 같은 결은 오늘 잠시 비켜두고 싶으신 것 같고요.`;
+  if(longing.length) read += ` ‘${longing.slice(0,2).join('·')}’ 쪽을 조금 더 꺼내 보이고 싶은 마음도 느껴져요.`;
+  return {read, shoot, groups:ranked};
+}
+
+/* A — 더 깊은 리딩용 프롬프트(여정 전체 · maydly 촬영 맥락) */
+function buildDeepPrompt(){
+  const fin=finalWords(), avoid=avoidWords();
+  const sel20=Array.from(sel['s1']);
+  const kept5=Array.from(sel['s4']);
+  const longing=Array.from(sel['s7']);
+  return `당신은 사진작가 maydly를 돕는, 사람을 따뜻하게 읽어내는 안내자입니다.
+아래는 한 사람이 촬영을 앞두고 200여 개의 단어 중에서 단계적으로 고르고 덜어내며 남긴 ‘오늘의 나’ 데이터입니다.
+
+- 넓게 끌린 단어: ${sel20.join(', ')}
+- 끝까지 남긴 핵심 긍정 5: ${kept5.join(', ')}
+- 오늘은 피하고 싶은 결: ${avoid.join(', ') || '(없음)'}
+- 그 반대편에서 새로 손을 뻗은 결(열망): ${longing.join(', ') || '(없음)'}
+- 최종으로 고른 다섯 단어: ${fin.join(', ')}
+
+이 데이터를 바탕으로, 이 사람이 ‘사진에 어떻게 담기고 싶은지’를 중심으로 아래를 따뜻하고 구체적으로 써주세요. 성격을 진단하듯 단정하지 말고, 본인이 읽었을 때 “맞아, 나 이래” 싶게요.
+
+1. 오늘의 나 — 한 문장 타이틀
+2. 이미 단단한 결(확신) vs 지금 더 꺼내고 싶은 결(열망)의 차이
+3. 오늘 비켜두고 싶은 결이 말해주는 것
+4. 카메라 앞에서의 나 — 정면일 때 / 문득 자연스러울 때 / 편안할 때, 세 순간의 모습
+
+마지막에 한 줄로, 이건 참고이고 실제 촬영의 결은 maydly(명진)가 잡는다는 것을 자연스럽게 덧붙여주세요.`;
+}
+
+function toggleDeep(){
+  const p=document.getElementById('deeppanel'); if(!p) return;
+  const b=document.getElementById('deeptoggle');
+  const open=(p.style.display==='none');
+  p.style.display = open?'':'none';
+  b.textContent = open?'🔎 접기':'🔎 더 깊이 보고 싶다면 (AI가 길게 읽어줘요)';
+}
+
 function renderDone(){
   const fin = finalWords();
   const avoid = avoidWords();
-  const finStr = fin.join(', ');
-  const prompt = `나는 사진 촬영을 앞두고 나를 표현하는 단어 다섯 개를 골랐어. 단어는 [${finStr}]야. 이 다섯 단어가 지금 나에게 어떤 의미인지, 내가 왜 이 단어들에 끌렸을지 차분하게 해석해줘. 분석적으로 단정하지 말고, 내가 스스로 더 생각해볼 수 있게 질문도 함께 던져줘.`;
+  const reading = buildReading();
+  const prompt = buildDeepPrompt();
 
   let sendText = `[maydly 촬영 전 · 오늘의 나]\n담고 싶은 결: ${fin.join(' · ')}`;
   if(avoid.length) sendText += `\n피하고 싶은 결: ${avoid.join(' · ')}`;
 
   $body.innerHTML = `
     <div class="arc"><span class="nowtag">다 왔어요 —</span>오늘의 나, 다섯 단어로 정리됐어요.</div>
+
+    <div class="todaycard">
+      <div class="tc-head">${CLOVER} 오늘의 당신</div>
+      <div class="tc-body">
+        <div class="tc-lead">고르신 다섯 단어를, maydly가 <b>촬영 결</b>로 읽어봤어요.</div>
+        <div class="tc-read">${reading.read}</div>
+        <div class="breakdown">
+          <div class="bt">고른 단어를 결로 보면</div>
+          <ul>
+            ${reading.groups.map(g=>`<li><b>${escHtml(GROUP_META[g].key)} 결</b> — ${escHtml(GROUP_META[g].explain)}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="tc-shoot"><div class="h">그래서 오늘 촬영은</div>${reading.shoot} 쪽으로 담아보면 좋겠어요.</div>
+        <div class="tc-sign">이 리딩은 당신을 이해하려고 적어둔 <b>참고</b>예요. 여기서 나온 결은 정답이 아니라 재료고, 실제로 어떤 빛과 표정으로 담을지는 이걸 보고 <b>제가 잡습니다.</b> — maydly ${CLOVER}</div>
+      </div>
+    </div>
 
     <div class="resultcard">
       <div class="rc-head"><svg width='16' height='16' viewBox='0 0 40 40' style='vertical-align:-2px'><g fill='#4f9a6a'><path d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/><path transform='rotate(90 20 20)' d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/><path transform='rotate(180 20 20)' d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/><path transform='rotate(270 20 20)' d='M20,20 C16,14 8,13 8,8 C8,4.5 13,3.5 16,6 C18,7.5 19.5,9 20,10.5 C20.5,9 22,7.5 24,6 C27,3.5 32,4.5 32,8 C32,13 24,14 20,20 Z'/></g><path d='M20,20 Q21,29 25,34' stroke='#4f9a6a' stroke-width='2' fill='none' stroke-linecap='round'/></svg> 오늘의 나, 결 카드</div>
@@ -606,11 +729,24 @@ function renderDone(){
       <button class="copybtn" id="copysend" onclick="copyText('sendtext','copysend')">이 내용 복사하기</button>
     </div>
 
-    <div class="promptbox">
-      <div class="pt">🤖 (선택) 나를 한 번 더 들여다보고 싶다면</div>
-      <p style="margin:0 0 6px; color:var(--tx2); font-size:.92rem;">아래 문장을 ChatGPT 같은 AI에 붙여넣으면, 이 단어들이 나에게 어떤 의미인지 한 번 더 볼 수 있어요.</p>
-      <div class="ptext" id="prompttext">${escHtml(prompt)}</div>
-      <button class="copybtn" id="copyprompt" onclick="copyText('prompttext','copyprompt')">프롬프트 복사하기</button>
+    <div class="deepbox">
+      <button class="deeptoggle" id="deeptoggle" onclick="toggleDeep()">🔎 더 깊이 보고 싶다면 (AI가 길게 읽어줘요)</button>
+      <div id="deeppanel" style="display:none">
+        <div class="deepwhat">
+          <p><b>이게 뭐예요?</b> 위 ‘오늘의 당신’은 짧게 요약한 거예요. 더 깊이 나를 들여다보고 싶다면, 당신이 지나온 <b>여정 전체</b>(고른 것·버린 것·반대편까지)를 담은 아래 프롬프트를 AI에게 넘겨 <b>훨씬 길고 자세한 해석</b>을 받아볼 수 있어요.</p>
+          <div class="deephow">
+            <div class="hh">쓰는 법</div>
+            <ol>
+              <li>아래 <b>‘프롬프트 복사하기’</b>를 누르세요.</li>
+              <li><b>ChatGPT</b>(또는 다른 AI)에 붙여넣고 보내세요.</li>
+              <li>나온 글을 천천히 읽어보세요. (마음에 안 들면 그냥 넘겨도 돼요.)</li>
+            </ol>
+          </div>
+          <p class="deepcaveat">${CLOVER} 이건 <b>선택</b>이에요 — 안 해도 괜찮아요. AI 해석도 <b>참고</b>일 뿐, 실제 촬영 결은 제가 잡습니다.</p>
+        </div>
+        <div class="ptext" id="prompttext">${escHtml(prompt)}</div>
+        <button class="copybtn" id="copyprompt" onclick="copyText('prompttext','copyprompt')">프롬프트 복사하기</button>
+      </div>
     </div>
 
     <div class="disc">
